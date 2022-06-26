@@ -7,11 +7,22 @@ const app = express()
 // eslint-disable-next-line
 const { MongoClient } = require("mongodb")
 
+// eslint-disable-next-line
+var db
+
 MongoClient.connect(
   "mongodb+srv://minseong:qwer1234@cluster0.21z5wjm.mongodb.net/?retryWrites=true&w=majority",
   // eslint-disable-next-line
-  (error) => {
+  (error, client) => {
     if (error) return console.log("ERROR ERROR ERROR ERROR")
+    // @ts-ignore
+    db = client.db("todoapp")
+
+    // @ts-ignore
+    db.collection("post").insertOne({ name: "John", _id: 100 }, () => {
+      console.log("complete!")
+    })
+
     app.listen(8080, () => {
       console.log("listening on 8080")
     })
