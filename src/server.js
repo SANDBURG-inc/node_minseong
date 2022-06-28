@@ -20,9 +20,9 @@ MongoClient.connect(
     // @ts-ignore
     db = client.db("todoapp") // todoapp이라는 database 연결
 
-    db.collection("post").insertOne({ name: "Minseong", age: 25 }, () => {
-      console.log("complete!")
-    })
+    // db.collection("post").insertOne({ name: "Minseong", age: 25 }, () => {
+    //   console.log("complete!")
+    // })
 
     app.listen(8080, () => {
       console.log("listening on 8080")
@@ -49,19 +49,32 @@ app.get("/write", (req, res) => {
 })
 
 app.post("/add", (req, res) => {
-  res.send("complete!")
-  db.collection("post").insertOne(
-    {
-      title: req.body.title,
-      date: req.body.date,
-    },
-    () => {
-      console.log("complete!")
+  db.collection("counter").findOne(
+    { name: "number of posts" },
+    (error, result) => {
+      // eslint-disable-next-line no-var
+      var numPosts = result.totalPost
+      res.send("complete!")
+      db.collection("post").insertOne(
+        {
+          _id: numPosts + 1,
+          title: req.body.title,
+          date: req.body.date,
+        },
+        () => {
+          console.log("complete!")
+        }
+      )
     }
   )
 })
 
 // /list 로 GET요청으로 접속하면 실제 db에 저장된 데이터들로 예쁘게 꾸며진 html을 보여줌
 app.get("/list", (req, res) => {
-  res.render("list.ejs")
+  db.collection("post")
+    .find()
+    .toArray((error, result) => {
+      console.log(result)
+      res.render("list.ejs", { posts: result })
+    })
 })
