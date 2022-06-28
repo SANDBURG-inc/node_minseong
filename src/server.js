@@ -7,19 +7,20 @@ const app = express()
 // eslint-disable-next-line
 const { MongoClient } = require("mongodb")
 
+app.set("view engine", "ejs")
+
 // eslint-disable-next-line
-var db
+var db // 어떤 데이터베이스에 저장을 할까?
 
 MongoClient.connect(
-  "mongodb+srv://minseong:qwer1234@cluster0.21z5wjm.mongodb.net/?retryWrites=true&w=majority",
+  "mongodb+srv://minseong:qwer123@cluster0.21z5wjm.mongodb.net/?retryWrites=true&w=majority",
   // eslint-disable-next-line
   (error, client) => {
     if (error) return console.log("ERROR ERROR ERROR ERROR")
     // @ts-ignore
-    db = client.db("todoapp")
+    db = client.db("todoapp") // todoapp이라는 database 연결
 
-    // @ts-ignore
-    db.collection("post").insertOne({ name: "John", _id: 100 }, () => {
+    db.collection("post").insertOne({ name: "Minseong", age: 25 }, () => {
       console.log("complete!")
     })
 
@@ -48,7 +49,19 @@ app.get("/write", (req, res) => {
 })
 
 app.post("/add", (req, res) => {
-  res.send("success!")
-  console.log(req.body.date)
-  console.log(req.body.title)
+  res.send("complete!")
+  db.collection("post").insertOne(
+    {
+      title: req.body.title,
+      date: req.body.date,
+    },
+    () => {
+      console.log("complete!")
+    }
+  )
+})
+
+// /list 로 GET요청으로 접속하면 실제 db에 저장된 데이터들로 예쁘게 꾸며진 html을 보여줌
+app.get("/list", (req, res) => {
+  res.render("list.ejs")
 })
