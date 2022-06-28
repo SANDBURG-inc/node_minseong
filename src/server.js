@@ -123,6 +123,11 @@ app.get("/edit/:id", (req, res) => {
       req.render("edit.ejs", { post: req })
     }
   )
-
   res.render("edit.ejs", { posts: res })
+})
+
+app.put('/edit', (req, res) => {
+  db.collection('post').updateOne({_id: ??}, {$set: {title: ??}}, (error, result) => {
+    
+  })
 })
