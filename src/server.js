@@ -91,6 +91,20 @@ app.delete("/delete", (req, res) => {
   req.body._id = parseInt(req.body._id)
   db.collection("post").deleteOne(req.body, () => {
     console.log("delete complete!")
+    // @ts-ignore
+    req.statusCode(200).send({ message: "성공했당!" })
   })
   res.send("delete complete")
+})
+
+// eslint-disable-next-line no-unused-vars
+app.get("/detail/:id", (req, res) => {
+  db.collection("post").findOne(
+    { _id: parseInt(req.params.id, 10) },
+    (error, result) => {
+      console.log(result)
+      // @ts-ignore
+      req.render("detail.ejs", { data: result })
+    }
+  )
 })
