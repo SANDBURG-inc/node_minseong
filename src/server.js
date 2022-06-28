@@ -49,24 +49,30 @@ app.get("/write", (req, res) => {
 })
 
 app.post("/add", (req, res) => {
-  db.collection("counter").findOne(
-    { name: "number of posts" },
-    (error, result) => {
-      // eslint-disable-next-line no-var
-      var numPosts = result.totalPost
-      res.send("complete!")
-      db.collection("post").insertOne(
-        {
-          _id: numPosts + 1,
-          title: req.body.title,
-          date: req.body.date,
-        },
-        () => {
-          console.log("complete!")
-        }
-      )
-    }
-  )
+  db.collection("counter").findOne({ name: "number of posts" }, (result) => {
+    // eslint-disable-next-line no-var
+    var numPosts = result.totalPost
+    res.send("complete!")
+    db.collection("counter").insertOne(
+      {
+        _id: numPosts + 1,
+        title: req.body.title,
+        date: req.body.date,
+      },
+      () => {
+        db.collection("post").updateOne(
+          { name: "number of posts" },
+          { $inc: { totalPost: 1 } },
+          (error) => {
+            if (error) {
+              return console.log(error)
+            }
+            return res.send("complete")
+          }
+        )
+      }
+    )
+  })
 })
 
 // /list 로 GET요청으로 접속하면 실제 db에 저장된 데이터들로 예쁘게 꾸며진 html을 보여줌
