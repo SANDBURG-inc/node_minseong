@@ -10,6 +10,10 @@ const { MongoClient } = require("mongodb")
 
 app.set("view engine", "ejs")
 
+const methodOverride = require("method-override")
+
+app.use(methodOverride("_method"))
+
 // eslint-disable-next-line
 var db // 어떤 데이터베이스에 저장을 할까?
 
@@ -46,7 +50,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/write", (req, res) => {
-  res.sendFile(`${__dirname}/write.html`)
+  res.render("list.ejs", { posts: res })
 })
 
 app.post("/add", (req, res) => {
@@ -107,4 +111,18 @@ app.get("/detail/:id", (req, res) => {
       req.render("detail.ejs", { data: result })
     }
   )
+})
+
+app.get("/edit/:id", (req, res) => {
+  db.collection("post").findOne(
+    // eslint-disable-next-line radix
+    { _id: parseInt(req.params.id) },
+    (error, result) => {
+      console.log(result)
+      // @ts-ignore
+      req.render("edit.ejs", { post: req })
+    }
+  )
+
+  res.render("edit.ejs", { posts: res })
 })
