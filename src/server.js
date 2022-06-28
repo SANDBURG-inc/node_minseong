@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 // @ts-check
 
 const express = require("express")
@@ -83,4 +84,13 @@ app.get("/list", (req, res) => {
       console.log(result)
       res.render("list.ejs", { posts: result })
     })
+})
+
+app.delete("/delete", (req, res) => {
+  // eslint-disable-next-line radix
+  req.body._id = parseInt(req.body._id)
+  db.collection("post").deleteOne(req.body, () => {
+    console.log("delete complete!")
+  })
+  res.send("delete complete")
 })
