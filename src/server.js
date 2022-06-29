@@ -4,15 +4,18 @@
 const express = require("express")
 
 const app = express()
-
 // eslint-disable-next-line
 const { MongoClient } = require("mongodb")
+const methodOverride = require("method-override")
+const passport = require("passport")
+const LocalStrategy = require("passport-local").Strategy
+const session = require("express-session")
 
 app.set("view engine", "ejs")
-
-const methodOverride = require("method-override")
-
 app.use(methodOverride("_method"))
+app.use(
+  session({ secret: "sexret-code", resave: true, saveUninitialized: false })
+)
 
 // eslint-disable-next-line
 var db // 어떤 데이터베이스에 저장을 할까?
@@ -126,8 +129,8 @@ app.get("/edit/:id", (req, res) => {
   res.render("edit.ejs", { posts: res })
 })
 
-app.put('/edit', (req, res) => {
-  db.collection('post').updateOne({_id: ??}, {$set: {title: ??}}, (error, result) => {
-    
-  })
-})
+// TODO
+// app.put('/edit', (req, res) => {
+//   db.collection('post').updateOne({_id: }, {$set: {title: }}, (error, result) => {
+//   })
+// })
