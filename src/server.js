@@ -134,3 +134,47 @@ app.get("/edit/:id", (req, res) => {
 //   db.collection('post').updateOne({_id: }, {$set: {title: }}, (error, result) => {
 //   })
 // })
+
+app.get("/login", (req, res) => {
+  res.render("login.ejs")
+})
+
+app.post(
+  "/login",
+  passport.authenticate("local", { failureRedirect: "/fail" }),
+  (req, res) => {
+    // @ts-ignore
+    req.redirect("/")
+  }
+)
+
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "id",
+      passwordField: "pw",
+      session: true,
+      passReqToCallback: false,
+    },
+    (inputId, inputPw, done) => {
+      db.collection("login").findOne({ id: inputId }, (error, result) => {
+        if (error) return done(error)
+        if (!result) return done(null, false, { message: "존재하지 않음." })
+        if (inputPw == result.pw) {
+          return done(null, result)
+        } else {
+          return done(null, false, { message: "비밀번호를 확인해주세요." })
+        }
+      })
+    }
+  )
+)
+
+passport.serializeUser(function (user, done) {
+  // @ts-ignore
+  done(null, user.id)
+})
+
+passport.deserializeUser(function (user, done) {
+  done(null, {})
+})
