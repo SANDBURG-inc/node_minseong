@@ -148,6 +148,19 @@ app.post(
   }
 )
 
+app.get("/mypage", isLogin, (req, res) => {
+  console.log(req.user)
+  res.render("mypage.ejs", { 사용자: req.user })
+})
+
+function isLogin(req, res, next) {
+  if (req.user) {
+    next()
+  } else {
+    req.send("로그인안했어요..")
+  }
+}
+
 passport.use(
   new LocalStrategy(
     {
@@ -175,6 +188,8 @@ passport.serializeUser(function (user, done) {
   done(null, user.id)
 })
 
-passport.deserializeUser(function (user, done) {
-  done(null, {})
+passport.deserializeUser(function (ID, done) {
+  db.collection("login").findOne({ id: ID }, (error, result) => {
+    done(null, result)
+  })
 })
