@@ -12,9 +12,16 @@
     <h4 class="m1-2 my-3"> TO DO LIST</h4>
 
     <div class="container input-group mb-2">
-      <input class="form-control">
+      <input class="form-control" id="search-input">
       <button class="input-group-append btn btn-danger">검색</button>
     </div>
+
+    <script>
+      $('#search').click(() => {
+        var 입력한값 = $("#search-input").val()
+        window.location.replace('/search?value' + 입력한값) // 주소창을 변경하는 코드
+      })
+    </script>
 
     <ul class="list-group">
       <% for (var i = 0; i < posts.length; i++) { %>
