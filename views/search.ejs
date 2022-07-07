@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  </head>
+  <body>
+    <%- include('nav.ejs') %>
+
+    <h4 class="m1-2 my-3"> TO DO LIST</h4>
+
+    <div class="container input-group mb-2">
+      <input class="form-control" id="search-input">
+      <button class="input-group-append btn btn-danger">검색</button>
+    </div>
+
+    <script>
+      $('#search').click(() => {
+        var 입력한값 = $("#search-input").val()
+        window.location.replace('/search?value' + 입력한값) // 주소창을 변경하는 코드
+      })
+    </script>
+
+    <div class=""container">
+        <ul class="list-group">
+        <% for (var i = 0; i < posts.length; i++) { %>
+            <li class="list-group-item">
+            <p>글번호: <%= posts[i]._id %></p>
+            <h4>TO DO TITLE: <%= posts[i].title %></h4>
+            <p>TO DO ENDLINE: <%= posts[i].date%></p>
+            <button class="btn btn-danger delete" data-id="<%= posts[i]._id%>"></button>
+            </li>
+        <% } %>
+        </ul>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <script>
+      $('delete').click(function() {
+        var postId = e.target.dataset.id
+        var now = $(this)
+        $.ajax({
+          method: "DELETE",
+          url: "/delete",
+          data: { _id: postId }
+        }).done((result) => {
+          // 성공 시 실행할 코드
+          console.log('success!')
+          $(this).parent('li').fadeOut();
+        }).fail((xhr, textStatus, errorThrown) => {
+          // 실패 시 실행할 코드
+          console.log(xhr, textStatus, errorThrown)
+        })
+      })
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+

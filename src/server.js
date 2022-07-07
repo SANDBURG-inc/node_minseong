@@ -193,3 +193,26 @@ passport.deserializeUser(function (ID, done) {
     done(null, result)
   })
 })
+
+app.get("/search", (req, res) => {
+  console.log(req.query.value)
+  db.collection("post")
+    .find({ $text: { $search: req.query.value } })
+    .toArray((error, result) => {
+      console.log(result)
+      res.render("search.ejs", { posts: result })
+    })
+})
+
+// /abc/ <- 정규식 쓰는 법
+
+// app.get("/shop/shirts", (req, res) => {
+//   res.send("셔츠 판매 페이지입니다.")
+// })
+
+// app.get("/shop/pants", (req, res) => {
+//   res.send("바지 파는 페이지입니다.")
+// })
+
+// @ts-ignore
+app.use("/shop", require("./routes/shop.js"))
