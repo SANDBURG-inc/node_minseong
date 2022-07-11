@@ -4,6 +4,11 @@
 const express = require("express")
 
 const app = express()
+
+const http = require("http").createServer(app)
+const { Server } = require("socket.io")
+const io = new Server(http)
+
 // eslint-disable-next-line
 const { MongoClient } = require("mongodb")
 const methodOverride = require("method-override")
@@ -32,11 +37,20 @@ MongoClient.connect(
     //   console.log("complete!")
     // })
 
-    app.listen(8080, () => {
+    // app.listen(8080, () => {
+    //   console.log("listening on 8080")
+    // })
+
+    http.listen(8080, () => {
       console.log("listening on 8080")
     })
   }
 )
+
+app.get("/socket", (req, res) => {
+  // @ts-ignore
+  req.render("socket.ejs")
+})
 
 app.use(express.urlencoded({ extended: true }))
 
@@ -216,3 +230,11 @@ app.get("/search", (req, res) => {
 
 // @ts-ignore
 app.use("/shop", require("./routes/shop.js"))
+
+io.on("connection", function (socket) {
+  console.log("연결되었어요")
+
+  socket.on("user-send", function (data) {
+    console.log(data)
+  })
+})
