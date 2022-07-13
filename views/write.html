@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<title>::: 사인패드 테스트 :::</title>
+
+	<script src="${pageContext.request.contextPath}/resources/js/jquery-1.11.3.min.js" type="text/javascript"></script>
+	<script src="${pageContext.request.contextPath}/resources/js/signature_pad.min.js" type="text/javascript"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+	
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/css.css">
+</head>
+
+<body>
+	<div id="signature-pad" class="m-signature-pad">
+		<div class="m-signature-pad--body">
+			<!-- <canvas id="signature-pad canvas" width="300" height="500"></canvas> -->
+      <canvas></canvas>
+		</div>
+		<div class="m-signature-pad--footer">
+			<div class="description">사인해 주세요~</div>
+			<button type="button" class="button clear" data-action="clear">지우기</button>
+			<button type="button" class="button save" data-action="save">저장</button>
+		</div>
+	</div>
+    
+    <script>
+    const canvas = document.querySelector("canvas");
+    const sign = new SignaturePad(canvas);
+		sign.minWidth = 5;
+    sign.maxWidth = 10;
+    sign.penColor = "rgb(66, 133, 244)";
+
+		
+		$("[data-action]").on("click", function(){
+			if ( $(this).data("action")=="clear" ){
+				sign.clear();
+			}
+			else if ( $(this).data("action")=="save" ){
+				if (sign.isEmpty()) {
+					alert("사인해 주세요!!");
+				} else {
+					$.ajax({
+						url : "save.jsp",
+						method : "post",
+						dataType : "json",
+						data : {
+							sign : sign.toDataURL()
+						},
+						success : function(r){
+							alert("저장완료 : " + r.filename);
+							sign.clear();
+						},
+						error : function(res){
+							console.log(res);
+						}
+					});
+				}
+			}
+		});
+		
+		
+		function resizeCanvas(){
+			var canvas = $("#signature-pad canvas")[0];
+	
+			var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+			canvas.width = canvas.offsetWidth * ratio;
+			canvas.height = canvas.offsetHeight * ratio;
+			canvas.getContext("2d").scale(ratio, ratio);
+		}
+	    
+	    $(window).on("resize", () => {
+			resizeCanvas();
+		});
+
+		resizeCanvas();
+    </script>
+</body>
+</html>

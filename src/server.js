@@ -17,16 +17,6 @@ const LocalStrategy = require("passport-local").Strategy
 const session = require("express-session")
 const { default: SignaturePad } = require("signature_pad")
 
-// @ts-ignore
-const signaturePad = new SignaturePad(canvas, {
-  minWidth: 5,
-  maxWidth: 10,
-  penColor: "rgb(66, 133, 244)",
-})
-
-// @ts-ignore
-const signaturePad = new SignaturePad(canvas)
-
 app.set("view engine", "ejs")
 app.use(methodOverride("_method"))
 app.use(
@@ -78,7 +68,9 @@ app.get("/", (req, res) => {
 })
 
 app.get("/write", (req, res) => {
-  res.render("list.ejs", { posts: res })
+  res.sendFile(
+    `/Users/kweonminseong/Documents/git/node_minseong/views/write.html`
+  )
 })
 
 app.post("/add", (req, res) => {
@@ -240,7 +232,7 @@ app.get("/search", (req, res) => {
 // })
 
 // @ts-ignore
-app.use("/shop", require("./routes/shop.js"))
+// app.use("/shop", require("./routes/shop.js"))
 
 io.on("connection", function (socket) {
   console.log("연결되었어요")
