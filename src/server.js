@@ -15,6 +15,17 @@ const methodOverride = require("method-override")
 const passport = require("passport")
 const LocalStrategy = require("passport-local").Strategy
 const session = require("express-session")
+const { default: SignaturePad } = require("signature_pad")
+
+// @ts-ignore
+const signaturePad = new SignaturePad(canvas, {
+  minWidth: 5,
+  maxWidth: 10,
+  penColor: "rgb(66, 133, 244)",
+})
+
+// @ts-ignore
+const signaturePad = new SignaturePad(canvas)
 
 app.set("view engine", "ejs")
 app.use(methodOverride("_method"))
